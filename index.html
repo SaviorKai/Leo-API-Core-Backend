@@ -32,7 +32,7 @@
             flex-direction: column;
             gap: 2rem;
         }
-        h1, h2 {
+        h1, h2, h3, h4 {
             margin: 0;
             font-weight: 600;
         }
@@ -125,6 +125,51 @@
              gap: 1rem;
              align-items: center;
         }
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .toggle-group label {
+            margin-bottom: 0;
+        }
+        .toggle-group input[type="checkbox"] {
+            width: auto;
+            height: 20px;
+            width: 20px;
+            cursor: pointer;
+        }
+
+        /* Styles for collapsible debug section */
+        .debug-details {
+            margin-top: 1.5rem;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            background-color: var(--color-bg);
+        }
+        .debug-details summary {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            outline: none; /* remove default focus outline */
+            list-style: revert; /* Use default triangle marker */
+        }
+        .debug-details summary:hover {
+            color: var(--color-text);
+        }
+        .debug-details[open] summary {
+            border-bottom: 1px solid var(--color-border);
+        }
+        .debug-content {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+        }
+        .debug-content h4 {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+
     </style>
 <script type="importmap">
 {
