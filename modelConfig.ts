@@ -1,4 +1,5 @@
 
+
 // --- SHARED CONFIGURATIONS ---
 
 // Available styles for image generation models
@@ -34,7 +35,7 @@ interface ModelSupports {
     alchemy?: boolean;
     contrast?: boolean;
     aspectRatios?: string[];
-    guidance?: Record<string, { preprocessorId: number; maxInputs: number; }>;
+    guidance?: Record<string, { preprocessorId: number; maxInputs: number; usesWeight: boolean; }>;
     promptEnhance?: boolean;
     resolutions?: string[];
     frameInterpolation?: boolean;
@@ -101,8 +102,9 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             contrast: true,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
             guidance: {
-                'Style Reference': { preprocessorId: 299, maxInputs: 4 }
-            }
+                'Style Reference': { preprocessorId: 299, maxInputs: 4, usesWeight: false },
+                'Content Reference': { preprocessorId: 233, maxInputs: 1, usesWeight: false }
+            },
         },
         defaults: {
             style: 'Dynamic',
@@ -117,8 +119,9 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             contrast: true,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
             guidance: {
-                'Style Reference': { preprocessorId: 298, maxInputs: 4 }
-            }
+                'Style Reference': { preprocessorId: 298, maxInputs: 4, usesWeight: false },
+                'Content Reference': { preprocessorId: 232, maxInputs: 1, usesWeight: false }
+            },
         },
         defaults: {
             style: 'Dynamic',
@@ -136,9 +139,10 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             contrast: true,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
             guidance: {
-                'Style Reference': { preprocessorId: 166, maxInputs: 4 },
-                'Character Reference': { preprocessorId: 397, maxInputs: 1 }
-            }
+                'Style Reference': { preprocessorId: 166, maxInputs: 4, usesWeight: false },
+                'Character Reference': { preprocessorId: 397, maxInputs: 1, usesWeight: false },
+                'Content Reference': { preprocessorId: 364, maxInputs: 1, usesWeight: false }
+            },
         },
         defaults: {
             style: 'Dynamic',
@@ -154,9 +158,10 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             contrast: true,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
             guidance: {
-                'Style Reference': { preprocessorId: 166, maxInputs: 4 },
-                'Character Reference': { preprocessorId: 397, maxInputs: 1 }
-            }
+                'Style Reference': { preprocessorId: 166, maxInputs: 4, usesWeight: false },
+                'Character Reference': { preprocessorId: 397, maxInputs: 1, usesWeight: false },
+                'Content Reference': { preprocessorId: 364, maxInputs: 1, usesWeight: false }
+            },
         },
         defaults: {
             style: 'Dynamic',
@@ -174,9 +179,10 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             contrast: false,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
             guidance: {
-                'Style Reference': { preprocessorId: 67, maxInputs: 4 },
-                'Character Reference': { preprocessorId: 133, maxInputs: 1 }
-            }
+                'Style Reference': { preprocessorId: 67, maxInputs: 4, usesWeight: false },
+                'Character Reference': { preprocessorId: 133, maxInputs: 1, usesWeight: false },
+                'Content Reference': { preprocessorId: 100, maxInputs: 1, usesWeight: false }
+            },
         },
         defaults: {
             style: 'Dynamic',
@@ -191,9 +197,10 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             contrast: false,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
             guidance: {
-                'Style Reference': { preprocessorId: 67, maxInputs: 4 },
-                'Character Reference': { preprocessorId: 133, maxInputs: 1 }
-            }
+                'Style Reference': { preprocessorId: 67, maxInputs: 4, usesWeight: false },
+                'Character Reference': { preprocessorId: 133, maxInputs: 1, usesWeight: false },
+                'Content Reference': { preprocessorId: 100, maxInputs: 1, usesWeight: false }
+            },
         },
         defaults: {
             style: 'Anime',
@@ -208,9 +215,10 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             contrast: false,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
             guidance: {
-                'Style Reference': { preprocessorId: 67, maxInputs: 4 },
-                'Character Reference': { preprocessorId: 133, maxInputs: 1 }
-            }
+                'Style Reference': { preprocessorId: 67, maxInputs: 4, usesWeight: false },
+                'Character Reference': { preprocessorId: 133, maxInputs: 1, usesWeight: false },
+                'Content Reference': { preprocessorId: 100, maxInputs: 1, usesWeight: false }
+            },
         },
         defaults: {
             style: 'Dynamic',
@@ -225,9 +233,10 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             contrast: false,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
             guidance: {
-                'Style Reference': { preprocessorId: 67, maxInputs: 4 },
-                'Character Reference': { preprocessorId: 133, maxInputs: 1 }
-            }
+                'Style Reference': { preprocessorId: 67, maxInputs: 4, usesWeight: false },
+                'Character Reference': { preprocessorId: 133, maxInputs: 1, usesWeight: false },
+                'Content Reference': { preprocessorId: 100, maxInputs: 1, usesWeight: false }
+            },
         },
         defaults: {
             style: 'Cinematic',
@@ -242,9 +251,10 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             contrast: false, // Vision uses Alchemy but doesn't have the contrast setting
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
             guidance: {
-                'Style Reference': { preprocessorId: 67, maxInputs: 4 },
-                'Character Reference': { preprocessorId: 133, maxInputs: 1 }
-            }
+                'Style Reference': { preprocessorId: 67, maxInputs: 4, usesWeight: false },
+                'Character Reference': { preprocessorId: 133, maxInputs: 1, usesWeight: false },
+                'Content Reference': { preprocessorId: 100, maxInputs: 1, usesWeight: false }
+            },
         },
         defaults: {
             style: 'Dynamic',
@@ -261,9 +271,10 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             contrast: false,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
             guidance: {
-                'Style Reference': { preprocessorId: 67, maxInputs: 4 },
-                'Character Reference': { preprocessorId: 133, maxInputs: 1 }
-            }
+                'Style Reference': { preprocessorId: 67, maxInputs: 4, usesWeight: false },
+                'Character Reference': { preprocessorId: 133, maxInputs: 1, usesWeight: false },
+                'Content Reference': { preprocessorId: 100, maxInputs: 1, usesWeight: false }
+            },
         },
         defaults: {
             style: 'Dynamic',
@@ -278,9 +289,10 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             contrast: false,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
             guidance: {
-                'Style Reference': { preprocessorId: 67, maxInputs: 4 },
-                'Character Reference': { preprocessorId: 133, maxInputs: 1 }
-            }
+                'Style Reference': { preprocessorId: 67, maxInputs: 4, usesWeight: false },
+                'Character Reference': { preprocessorId: 133, maxInputs: 1, usesWeight: false },
+                'Content Reference': { preprocessorId: 100, maxInputs: 1, usesWeight: false }
+            },
         },
         defaults: {
             style: 'Dynamic',
@@ -295,8 +307,9 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             contrast: false,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
             guidance: {
-                'Style Reference': { preprocessorId: 431, maxInputs: 4 }
-            }
+                'Style Reference': { preprocessorId: 431, maxInputs: 4, usesWeight: false },
+                'Content Reference': { preprocessorId: 430, maxInputs: 1, usesWeight: false }
+            },
         },
         defaults: {
             style: 'Photography',
@@ -311,8 +324,8 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             contrast: false,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
             guidance: {
-                'Style Reference': { preprocessorId: 431, maxInputs: 4 }
-            }
+                'Style Reference': { preprocessorId: 431, maxInputs: 4, usesWeight: false }
+            },
         },
         defaults: {
             style: 'Vibrant',

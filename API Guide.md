@@ -116,11 +116,12 @@ The same POST /generations endpoint is used for image-to-image tasks. This is ac
 | init\_strength | number | Controls the influence of the initial image on the final output. A value of 0.1 will be very different from the original, while 0.9 will be very similar. Must be a float between 0.1 and 0.9. |
 | imagePromptWeight | number | A parameter to adjust the weight of the image prompt's influence. |
 
-### **2.5. Image Guidance (ControlNets)**
+### **2.5. Image Guidance (ControlNets & Context Images)**
 
-Image Guidance, also known as ControlNets, allows for more precise control over the structure and style of a generated image by using a reference image. Different types of guidance are available, such as Style Reference, Character Reference, and others, but their compatibility varies depending on the base model being used.
+Image Guidance allows for more precise control over the structure and style of a generated image by using a reference image. The implementation varies depending on the model.
 
-To use Image Guidance, you include a controlnets array in your POST /generations request. Each object in the array defines a specific guidance type to apply.
+* **For most models (SDXL, Phoenix, etc.):** Use the controlnets array in your POST /generations request. Each object in the array defines a specific guidance type (e.g., Style Reference, Pose to Image) and its settings.  
+* **For FLUX.1 Kontext:** This model uses a unique parameter, contextImages, for its advanced editing capabilities. Instead of controlnets, you provide an array of contextImages objects.
 
 **Key Image Guidance Parameters:**
 
@@ -129,7 +130,7 @@ To use Image Guidance, you include a controlnets array in your POST /generations
 * weight: A numeric value from 0 to 2 that fine-tunes the strength.  
 * influence: Used only when multiple Style References are applied to define the ratio of influence between them.
 
-It is crucial to use the correct preprocessor ID for the desired ControlNet and base model combination. For a detailed compatibility matrix, refer to Appendix A. Note that combining multiple ControlNets with most SDXL models is not supported, with the exception of Style Reference and Character Reference.
+It is crucial to use the correct implementation (controlnets or contextImages) and the correct preprocessor IDs for the desired guidance and base model combination. For a detailed compatibility matrix, refer to Appendix A.
 
 ### **2.6. Applying Elements (LoRAs)**
 
@@ -435,7 +436,7 @@ This table provides the names, UUIDs, and key operational parameters for popular
 
 | Model Name | Model ID | Key Settings | Constraints | Supported Image Guidance |
 | :---- | :---- | :---- | :---- | :---- |
-| **FLUX.1 Kontext** | 28aeddf8-bd19-4803-80fc-79602d1a9989 | Omni model for precise, instruction-based image editing. | Standard resolution and aspect ratio constraints. | N/A (Primarily an editing model) |
+| **FLUX.1 Kontext** | 28aeddf8-bd19-4803-80fc-79602d1a9989 | Omni model for precise, instruction-based image editing. | Optimized for precise, controllable image editing. | Uses the **contextImages** parameter for image-to-image and editing tasks (not standard ControlNets). |
 | **Flux Dev (Precision)** | b2614463-296c-462a-9586-aafdb8f00e36 | contrast parameter is required. | width/height must be a multiple of 8, between 32-1536. | **Style Reference:** ID 299 **Content Reference:** ID 233 |
 | **Flux Schnell (Speed)** | 1dd50843-d653-4516-a8e3-f0238ee453ff | contrast parameter is required. | width/height must be a multiple of 8, between 32-1536. | **Style Reference:** ID 298 **Content Reference:** ID 232 |
 | **Leonardo Phoenix 1.0** | de7d3faf-762f-48e0-b3b7-9d0ac3a3fcf3 | contrast parameter is required. Excels at prompt adherence and text rendering. | contrast must be \>= 2.5 if alchemy: true. width/height must be a multiple of 8, between 32-1536. Cannot be used with Canvas Inpainting. | **Style Reference:** ID 166 **Character Reference:** ID 397 **Content Reference:** ID 364 |
@@ -448,6 +449,7 @@ This table provides the names, UUIDs, and key operational parameters for popular
 | **SDXL 1.0** | 16e7060a-803e-4df3-97ee-edcfa5dc9cc8 | General purpose diffusion model. | width/height must be a multiple of 8, between 32-1536. | **Style Reference:** ID 67 **Character Reference:** ID 133 **Content Reference:** ID 100 |
 | **AlbedoBase XL** | 2067ae52-33fd-4a82-bb92-c2c55e7d2786 | Generalist model tending towards CG artistic outputs. | width/height must be a multiple of 8, between 32-1536. | **Style Reference:** ID 67 **Character Reference:** ID 133 **Content Reference:** ID 100 |
 | **Lucid Realism** | 05ce0082-2d80-4a2d-8653-4d1c85e2418e | Fine-tuned for hyper-photorealistic clarity (lighting, skin texture). | width/height must be a multiple of 8, between 32-1536. | **Style Reference:** ID 431 **Content Reference:** ID 430 |
+| **Lucid Origin** | 7b592283-e8a7-4c5a-9ba6-d18c31f258b9 | contrast parameter is required. Versatile, high-adherence model trained for Full HD. | width/height must be a multiple of 8, between 32-1536. | **Style Reference:** ID 431 **Content Reference:** ID 430 |
 
 ### **Table B: Image Generation presetStyle Reference**
 
@@ -549,9 +551,9 @@ This table provides a list of available Elements, their IDs, and compatibility i
 | Modern Analog Photography | 8dac37a4-b3ee-404b-8198-17ed356b7afe | SDXL\_1\_0 | 0.8 | \-2 to 2 |
 | Dragon Scales | 840f7698-2db2-4356-aa92-9444cea38223 | SDXL\_1\_0 | 1 | \-2 to 2 |
 | Cybertech | 3cc57e9b-dd82-44d7-8ecf-9e4a27d9d120 | SDXL\_1\_0 | 0.7 | \-2 to 3 |
-| Glitch Art | 7e44ef18-f78e-4f63-8ac4-0cdc759372d5 | SDXL\_1\_0 | 1 | \-2 to 2 |
+| Glitch Art | 7e44ef18-f78e-46f3-8ac4-0cdc759372d5 | SDXL\_1\_0 | 1 | \-2 to 2 |
 | Soft Pastel Anime | 383a7d66-13a0-4225-96ec-d15f83ef9c37 | SDXL\_1\_0 | 0.7 | \-2 to 2 |
-| Pop Surrealism | e3063098-09fb-46b7-9ba-c7b2eef6d824 | SDXL\_1\_0 | 0.8 | \-2 to 2 |
+| Pop Surrealism | e3063098-09fb-46b7-90ba-c7b2eef6d824 | SDXL\_1\_0 | 0.8 | \-2 to 2 |
 | Rainbowcore | e4cbd583-f2ea-4be1-b9d5-b528344ac3d9 | SDXL\_1\_0 | 0.8 | \-2 to 2 |
 | CGI Noir | 238c8691-713c-47c6-b43c-11a790d09dd8 | SDXL\_1\_0 | 0.8 | \-2 to 2 |
 | Simple Flat Illustration | 5f3e58d8-7af3-4d5b-92e3-a3d04b9a3414 | SDXL\_1\_0 | 1 | \-2 to 2 |
@@ -571,7 +573,7 @@ This table provides a list of available Elements, their IDs, and compatibility i
 | Digital Painting | 4248234d-345f-473a-b185-e172d7dbaa8b | SDXL\_1\_0 | 0.8 | \-2 to 2 |
 | Celshaded Anime | 5aa85bbc-30bd-4c25-85e2-91a1ce56ae83 | SDXL\_1\_0 | 0.8 | \-2 to 2 |
 | Abstract Line Art (Flux) | 93cec898-0fb0-4fb0-9f18-8b8423560a1d | FLUX\_DEV | 1 | \-2 to 2 |
-| 90s Retro Anime | 7f404d0b-432d-47c6-be04-2867f83eb5b4 | WAN21 | 1 | \-2 to 2 |
+| 90s Retro Anime | 7f404d0b-432d-470f-be04-2867f83eb5b4 | WAN21 | 1 | \-2 to 2 |
 | Colorpop | 815de207-d352-4d46-9310-3fcd5324a7e2 | SDXL\_1\_0 | 1 | \-2 to 2 |
 | Glowwave | 90eb308a-8922-4c9a-98fc-869ef0714489 | SDXL\_1\_0 | 0.7 | \-2 to 2 |
 | Game UI | 1f01e542-b8a9-44e7-bb9d-71fd86b59c8b | SDXL\_1\_0 | 1 | \-2 to 2 |
@@ -579,62 +581,60 @@ This table provides a list of available Elements, their IDs, and compatibility i
 | Toon & Anime (Flux) | 7c040ea3-cbed-455d-825a-2657eea36aae | FLUX\_DEV | 1 | \-2 to 2 |
 | Cute Handdrawn | bf8eff23-d537-4323-b3aa-396dfeee8776 | FLUX\_DEV | 1 | \-2 to 2 |
 | Retro Pastel | b1db3171-7f71-457d-aeb4-f810f6eb019d | FLUX\_DEV | 1 | \-2 to 2 |
+| Eyes In | 148b50d0-2040-4524-a36f-6e330f9e362e | WAN21 | 1 | \-2 to 2 |
 | Abstract Line Art | bf089a40-60cd-4ca0-8101-a10de44850b7 | SDXL\_1\_0 | 1 | \-2 to 2 |
 | 3D Sculpt | e97f51ea-60dc-4763-a692-09200c843ac6 | SDXL\_1\_0 | 1 | \-2 to 2 |
 | Oldschool Comic (Flux) | 28eb53a4-8da6-47c1-b73e-6541f4d65407 | FLUX\_DEV | 1 | \-2 to 2 |
+| Crash Zoom In | b0191ad1-a723-439c-a4bc-a3f5d5884db3 | WAN21 | 1 | \-2 to 2 |
 | App Icon | 458a9a60-a6d9-46c7-b346-bd0a9103c219 | FLUX\_DEV | 1 | 2 to 2 |
 | Vibrant Iridescence Painting | cff579f8-f93e-4d12-bf69-5fb186669ca0 | FLUX\_DEV | 1 | \-2 to 2 |
+| Robo Arm | 8df55fe2-5c6f-4dbf-8ade-eb997807ca0d | WAN21 | 0.9 | \-2 to 2 |
 | Claynimation | 649ddca4-fcef-4bb7-95fa-ef3c35110b14 | WAN21 | 1 | \-2 to 2 |
 | Glasscore | a699f5da-f7f5-4afe-8473-c426b245c145 | SDXL\_1\_0 | 1 | \-2 to 2 |
 | Woodcut Illustration | 4fc2cb01-55f0-4f23-a317-f540c08eb548 | SDXL\_1\_0 | 0.8 | \-2 to 2 |
+| Crane Up | c765bd57-cdc5-4317-a600-69a8bd6c4ce6 | WAN21 | 1 | \-2 to 2 |
+| Medium Zoom In | f46d8e7f-e0ca-4f6a-90ab-141d731f47ae | WAN21 | 1 | \-2 to 2 |
 | Wooden Craft | 613cf2d5-bc0b-4336-8efa-d25dc112c41f | FLUX\_DEV | 1 | \-2 to 2 |
 | Dream Geometry | e6ef8eac-ba9f-4ca4-ab37-32ed1f09ede9 | FLUX\_DEV | 1 | \-2 to 2 |
 | Felted | c1888bb5-2179-44fe-ba0b-47669c7c6f8f | WAN21 | 1 | \-2 to 2 |
+| Super Dolly Out | 906b93f2-beb3-42be-9283-92236cc90ed6 | WAN21 | 0.9 | \-2 to 2 |
 | Golden Age Cinema | 441054b6-2432-412a-8965-0225867638c1 | WAN21 | 1 | \-2 to 2 |
 | Infrared Photography | 82d12da5-ae30-4d0f-9a3f-0a35d74e487c | SDXL\_1\_0 | 0.8 | \-2 to 2 |
 | Simple Icons | ec024a37-6fab-41ba-bc03-ab29ae0b9b5a | SDXL\_1\_0 | 1 | \-2 to 2 |
+| Orbit Left | 74bea0cc-9942-4d45-9977-28c25078bfd4 | WAN21 | 1 | \-2 to 2 |
 | Cardboard | 38641346-9360-4122-b721-49eef528502e | FLUX\_DEV | 1 | \-2 to 2 |
 | Porcelain | 19f3fcf0-ee0a-4cab-a174-4ac2d032f617 | FLUX\_DEV | 1 | \-2 to 2 |
 | Inkflow | aab9138e-40df-45cd-bc4a-8e32bf729854 | WAN21 | 1 | \-2 to 2 |
+| Handheld | 75722d13-108f-4cea-9471-cb7e5fc049fe | WAN21 | 0.9 | \-2 to 2 |
 | Vintage Black & White | 4179f8bd-ae74-47c8-974c-212691acde29 | WAN21 | 1 | \-2 to 2 |
+| Tilt Down | a1923b1b-854a-46a1-9e26-07c435098b87 | WAN21 | 1 | \-2 to 2 |
 | Vintage Photography | 6e37fc81-eed7-4ae7-aa86-d4b719b2f098 | SDXL\_1\_0 | 1 | \-2 to 2 |
 | Chrome | 8a526c02-8dc0-4038-8c7e-544c3d34726b | FLUX\_DEV | 1 | \-2 to 2 |
 | Soft Pastel Anime (Flux) | 27e28f9e-7431-44c8-b42a-98bcec4814c4 | FLUX\_DEV | 1 | \-2 to 2 |
 | Moody Realism | b46deca6-b1fc-4798-b8f0-1916aef1ad81 | WAN21 | 1 | \-2 to 2 |
+| Lens Crack | 193da194-2632-4f6a-a1df-d03ca9ae0ea9 | WAN21 | 1.2 | \-2 to 2 |
 | Rough Sketch | 1b900d40-e593-4abb-92b5-04ce96403a44 | FLUX\_DEV | 1 | \-2 to 2 |
 | Dark Arts | 5db13b9c-0b0b-4684-87ca-01f59c97aae0 | SDXL\_1\_0 | 1 | \-2 to 2 |
 | Oldschool Comic (WAN21) | 53d80166-fd48-42a6-9c94-f47482d0808f | WAN21 | 1 | \-2 to 2 |
+| Crash Zoom Out | 1975ac74-92ca-46b3-81b3-6f191a9ae438 | WAN21 | 1 | \-2 to 2 |
 | Grunge | 3dfa7774-1481-4ece-9fa3-d89c7ca35943 | FLUX\_DEV | 1 | \-2 to 2 |
 | Cute Emotes | d3a193ba-c69f-47d2-8759-583a729a2f26 | SDXL\_1\_0 | 1 | \-2 to 2 |
 | Old VHS | 5d4de76c-5545-40de-ae7d-f7b4f73fe187 | WAN21 | 1 | \-2 to 2 |
-| Simple Flat Animation | 05667d3a-f47f-441c-9653-e13c0744129b | WAN21 | 1 | \-2 to 2 |
-| Soft Infrared | 51ea1289-394d-4b2c-9fcc-feffa0292193 | WAN21 | 1 | \-2 to 2 |
-| Stylized 3Dtoon | b295930d-625b-4490-9580-fca498568231 | WAN21 | 1 | \-2 to 2 |
-| Y2K Analog | 4abcbeef-c9ed-48bd-b270-48ad1dfc16e9 | WAN21 | 1 | \-2 to 2 |
-| Synthwave | 427fe84f-a3fa-4d9f-b780-124165e435ed | WAN21 | 1 | \-2 to 2 |
-| **Camera & Motion Controls** |  |  |  |  |
-| Eyes In | 148b50d0-2040-4524-a36f-6e330f9e362e | WAN21 | 1 | \-2 to 2 |
-| Crash Zoom In | b0191ad1-a723-439c-a4bc-a3f5d5884db3 | WAN21 | 1 | \-2 to 2 |
-| Robo Arm | 8df55fe2-5c6f-4dbf-8ade-eb997807ca0d | WAN21 | 0.9 | \-2 to 2 |
-| Crane Up | c765bd57-cdc5-4317-a600-69a8bd6c4ce6 | WAN21 | 1 | \-2 to 2 |
-| Medium Zoom In | f46d8e7f-e0ca-4f6a-90ab-141d731f47ae | WAN21 | 1 | \-2 to 2 |
-| Super Dolly Out | 906b93f2-beb3-42be-9283-92236cc90ed6 | WAN21 | 0.9 | \-2 to 2 |
-| Orbit Left | 74bea0cc-9942-4d45-9977-28c25078bfd4 | WAN21 | 1 | \-2 to 2 |
-| Handheld | 75722d13-108f-4cea-9471-cb7e5fc049fe | WAN21 | 0.9 | \-2 to 2 |
-| Tilt Down | a1923b1b-854a-46a1-9e26-07c435098b87 | WAN21 | 1 | \-2 to 2 |
-| Lens Crack | 193da194-2632-4f6a-a1df-d03ca9ae0ea9 | WAN21 | 1.2 | \-2 to 2 |
-| Crash Zoom Out | 1975ac74-92ca-46b3-81b3-6f191a9ae438 | WAN21 | 1 | \-2 to 2 |
 | Super Dolly In | a3992d78-34fc-44c6-b157-e2755d905197 | WAN21 | 0.9 | \-2 to 2 |
+| Simple Flat Animation | 05667d3a-f47f-441c-9653-e13c0744129b | WAN21 | 1 | \-2 to 2 |
 | Bullet Time | fbed015e-594e-4f78-b4be-3b07142aaa1e | WAN21 | 1 | \-2 to 2 |
 | Dolly In | ece8c6a9-3deb-430e-8c93-4d5061b6adbf | WAN21 | 1.2 | \-2 to 2 |
 | Dolly Left | f507880a-3fa8-4c3a-96bb-3ce3b70ac53b | WAN21 | 1 | \-2 to 2 |
 | Dolly Right | 587a0109-30be-4781-a18e-e353b580fd10 | WAN21 | 1 | \-2 to 2 |
+| Soft Infrared | 51ea1289-394d-4b2c-9fcc-feffa0292193 | WAN21 | 1 | \-2 to 2 |
 | Crane Over Head | 1054d533-168c-4821-bd3d-a56182afa4f3 | WAN21 | 1 | \-2 to 2 |
-| Flood | a12c150e-95e9-46b7-b906-2bcb61ad3273 | WAN21 | 1 | \-2 to 2 |
+| Stylized 3Dtoon | b295930d-625b-4490-9580-fca498568231 | WAN21 | 1 | \-2 to 2 |
+| Y2K Analog | 4abcbeef-c9ed-48bd-b270-48ad1dfc16e9 | WAN21 | 1 | \-2 to 2 |
 | Explosion | 65da803d-c015-495a-8d5c-e969a79c9894 | WAN21 | 1 | \-2 to 2 |
 | Dolly Out | 772cb36a-7d18-4250-b4aa-0c3f1a8431a0 | WAN21 | 1 | \-2 to 2 |
 | Crane Down | 5a1d2a6a-7709-4097-9158-1b7ae6c9e647 | WAN21 | 1 | \-2 to 2 |
 | Disintegration | a51e2e8d-ba5e-44f2-9e00-3d86fd93c9bc | WAN21 | 1 | \-2 to 2 |
 | Orbit Right | aec24e36-a2e8-4fae-920c-127d276bbe4b | WAN21 | 1 | \-2 to 2 |
 | Tilt Up | 6ad6de1f-bd15-4d0b-ae0e-81d1a4c6c085 | WAN21 | 1 | \-2 to 2 |
+| Synthwave | 427fe84f-a3fa-4d9f-b780-124165e435ed | WAN21 | 1 | \-2 to 2 |
 

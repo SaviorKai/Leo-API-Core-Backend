@@ -169,6 +169,98 @@
             margin-bottom: 0.5rem;
             color: var(--color-primary);
         }
+        
+        /* Styles for Image Guidance */
+        .guidance-card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .guidance-upload-area {
+            text-align: center;
+        }
+        .guidance-upload-area button {
+            max-width: 250px;
+        }
+        .guidance-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .guidance-item {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 1.5rem;
+            align-items: flex-start;
+            background-color: var(--color-bg);
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid var(--color-border);
+            position: relative;
+        }
+        .guidance-item-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000;
+            position: relative;
+        }
+        .guidance-item-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            margin: 0;
+        }
+        .guidance-item-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .guidance-item-controls .form-group {
+            margin-bottom: 0;
+        }
+        .guidance-item-controls .slider-group {
+            grid-template-columns: 1fr 60px;
+        }
+        .remove-guidance-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(0, 0, 0, 0.6);
+            color: var(--color-on-primary);
+            border: 1px solid var(--color-border);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 22px;
+            text-align: center;
+            cursor: pointer;
+            padding: 0;
+            transition: background-color 0.2s;
+        }
+        .remove-guidance-btn:hover {
+            background: var(--color-error);
+            color: #000;
+        }
+        .guidance-item-status {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
+            border-radius: 4px;
+        }
 
     </style>
 <script type="importmap">
