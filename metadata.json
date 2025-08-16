@@ -1,0 +1,5 @@
+{
+  "description": "back-end integration for Leonardo that can be used by other projects. ",
+  "requestFramePermissions": [],
+  "name": "Leonardo API Backend Core"
+}
