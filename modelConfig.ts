@@ -36,6 +36,7 @@ interface ModelSupports {
     contrast?: boolean;
     aspectRatios?: string[];
     guidance?: Record<string, { preprocessorId: number; maxInputs: number; usesWeight: boolean; }>;
+    contextGuidance?: string[];
     promptEnhance?: boolean;
     resolutions?: string[];
     frameInterpolation?: boolean;
@@ -67,12 +68,12 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
     // --- FLUX Models ---
     "FLUX.1 Kontext": {
         id: "28aeddf8-bd19-4803-80fc-79602d1a9989",
-        nodeType: 'image-edit',
+        nodeType: 'image-generation',
         family: 'FLUX',
         supports: {
             contrast: true,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
-            guidance: {}
+            contextGuidance: ['SUBJECT_AND_STYLE', 'STYLE_ONLY', 'SUBJECT_ONLY', 'NEGATIVE'],
         },
         defaults: {
             strength: 0.6,
@@ -85,7 +86,7 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
         supports: {
             contrast: true,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
-            guidance: {},
+            contextGuidance: ['SUBJECT_AND_STYLE', 'STYLE_ONLY', 'SUBJECT_ONLY', 'NEGATIVE'],
             promptEnhance: true
         },
         defaults: {

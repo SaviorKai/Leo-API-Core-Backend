@@ -14,6 +14,10 @@ interface ControlNetWithStrengthType {
 }
 export type ControlNetParams = ControlNetWithWeight | ControlNetWithStrengthType;
 
+interface ContextImageParams {
+    init_image_id: string;
+    context: string;
+}
 
 export interface GenerationParams {
     prompt: string;
@@ -38,6 +42,7 @@ export interface GenerationParams {
     init_strength?: number;
     imagePromptWeight?: number;
     controlnets?: ControlNetParams[];
+    contextImages?: ContextImageParams[];
 }
 
 export interface InitialGenerationResponse {

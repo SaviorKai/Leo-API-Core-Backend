@@ -29,6 +29,7 @@ interface GuidanceImage {
     guidanceType: string;
     strengthType: string;
     weight: number;
+    contextType?: string;
 }
 
 const App: React.FC = () => {
@@ -123,14 +124,17 @@ const App: React.FC = () => {
         const previewUrl = URL.createObjectURL(file);
         
         const supportedGuidance = selectedConfig?.supports.guidance ? Object.keys(selectedConfig.supports.guidance) : [];
+        const supportedContextGuidance = selectedConfig?.supports.contextGuidance || [];
         const defaultGuidanceType = supportedGuidance.length > 0 ? supportedGuidance[0] : '';
         const defaultStrengthType = defaultGuidanceType ? GUIDANCE_STRENGTH_TYPES[defaultGuidanceType]?.[1] || 'Mid' : 'Mid';
+        const defaultContextType = supportedContextGuidance.length > 0 ? supportedContextGuidance[0] : '';
         
         const newImage: GuidanceImage = {
             tempId, file, previewUrl, status: 'uploading',
             guidanceType: defaultGuidanceType,
             strengthType: defaultStrengthType,
             weight: 1.0,
+            contextType: defaultContextType,
         };
 
         setGuidanceImages(prev => [...prev, newImage]);
@@ -232,7 +236,15 @@ const App: React.FC = () => {
                 params.contrast = contrast;
             }
             
-            if (selectedConfig.supports.guidance && guidanceImages.length > 0) {
+            if (selectedConfig.supports.contextGuidance && guidanceImages.length > 0) {
+                const readyImages = guidanceImages.filter(img => img.status === 'ready' && img.id);
+                if (readyImages.length > 0) {
+                    params.contextImages = readyImages.map(img => ({
+                        init_image_id: img.id!,
+                        context: img.contextType!,
+                    }));
+                }
+            } else if (selectedConfig.supports.guidance && guidanceImages.length > 0) {
                 const readyImages = guidanceImages.filter(img => img.status === 'ready' && img.id);
                 if (readyImages.length > 0) {
                     params.controlnets = readyImages.map((img): ControlNetParams => {
@@ -296,6 +308,7 @@ const App: React.FC = () => {
     };
 
     const supportedGuidance = selectedConfig?.supports.guidance ? Object.keys(selectedConfig.supports.guidance) : [];
+    const supportedContextGuidance = selectedConfig?.supports.contextGuidance || [];
 
     return (
         <>
@@ -369,9 +382,9 @@ const App: React.FC = () => {
                 </div>
 
                 <div className="card">
-                    <h2>Image Guidance (ControlNets)</h2>
+                    <h2>Image Guidance</h2>
                     <div className="guidance-card-content">
-                        {supportedGuidance.length > 0 ? (
+                        {(supportedGuidance.length > 0 || supportedContextGuidance.length > 0) ? (
                             <>
                                 <div className="guidance-upload-area">
                                     <input type="file" id="image-upload" multiple accept="image/png, image/jpeg" onChange={handleFileInputChange} style={{ display: 'none' }}/>
@@ -382,6 +395,7 @@ const App: React.FC = () => {
                                 {guidanceImages.length > 0 && (
                                     <div className="guidance-list">
                                         {guidanceImages.map((img) => {
+                                            const isContextModel = supportedContextGuidance.length > 0;
                                             const guidanceConfig = selectedConfig?.supports.guidance?.[img.guidanceType];
                                             const guidanceUsesWeight = guidanceConfig?.usesWeight ?? true;
 
@@ -397,26 +411,44 @@ const App: React.FC = () => {
                                                         )}
                                                     </div>
                                                     <div className="guidance-item-controls">
-                                                        <div className="form-group">
-                                                            <label htmlFor={`guidance-type-${img.tempId}`}>Guidance Type</label>
-                                                            <select id={`guidance-type-${img.tempId}`} value={img.guidanceType} onChange={(e) => updateGuidanceImage(img.tempId, { guidanceType: e.target.value })} disabled={img.status !== 'ready'}>
-                                                                {supportedGuidance.map(type => (<option key={type} value={type}>{type}</option>))}
-                                                            </select>
-                                                        </div>
-                                                        {guidanceUsesWeight ? (
+                                                        {isContextModel ? (
                                                             <div className="form-group">
-                                                                <label>Weight: {img.weight.toFixed(2)}</label>
-                                                                <div className="slider-group">
-                                                                    <input type="range" min="0" max="2" step="0.05" value={img.weight} onChange={(e) => updateGuidanceImage(img.tempId, { weight: parseFloat(e.target.value) })} disabled={img.status !== 'ready'} />
-                                                                </div>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="form-group">
-                                                                <label htmlFor={`strength-type-${img.tempId}`}>Strength Type</label>
-                                                                <select id={`strength-type-${img.tempId}`} value={img.strengthType} onChange={(e) => updateGuidanceImage(img.tempId, { strengthType: e.target.value })} disabled={img.status !== 'ready'}>
-                                                                    {(GUIDANCE_STRENGTH_TYPES[img.guidanceType] || []).map(type => (<option key={type} value={type}>{type}</option>))}
+                                                                <label htmlFor={`context-type-${img.tempId}`}>Context Type</label>
+                                                                <select
+                                                                    id={`context-type-${img.tempId}`}
+                                                                    value={img.contextType}
+                                                                    onChange={(e) => updateGuidanceImage(img.tempId, { contextType: e.target.value })}
+                                                                    disabled={img.status !== 'ready'}
+                                                                >
+                                                                    {supportedContextGuidance.map(type => (
+                                                                        <option key={type} value={type}>{type.replace(/_/g, ' ')}</option>
+                                                                    ))}
                                                                 </select>
                                                             </div>
+                                                        ) : (
+                                                            <>
+                                                                <div className="form-group">
+                                                                    <label htmlFor={`guidance-type-${img.tempId}`}>Guidance Type</label>
+                                                                    <select id={`guidance-type-${img.tempId}`} value={img.guidanceType} onChange={(e) => updateGuidanceImage(img.tempId, { guidanceType: e.target.value })} disabled={img.status !== 'ready'}>
+                                                                        {supportedGuidance.map(type => (<option key={type} value={type}>{type}</option>))}
+                                                                    </select>
+                                                                </div>
+                                                                {guidanceUsesWeight ? (
+                                                                    <div className="form-group">
+                                                                        <label>Weight: {img.weight.toFixed(2)}</label>
+                                                                        <div className="slider-group">
+                                                                            <input type="range" min="0" max="2" step="0.05" value={img.weight} onChange={(e) => updateGuidanceImage(img.tempId, { weight: parseFloat(e.target.value) })} disabled={img.status !== 'ready'} />
+                                                                        </div>
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="form-group">
+                                                                        <label htmlFor={`strength-type-${img.tempId}`}>Strength Type</label>
+                                                                        <select id={`strength-type-${img.tempId}`} value={img.strengthType} onChange={(e) => updateGuidanceImage(img.tempId, { strengthType: e.target.value })} disabled={img.status !== 'ready'}>
+                                                                            {(GUIDANCE_STRENGTH_TYPES[img.guidanceType] || []).map(type => (<option key={type} value={type}>{type}</option>))}
+                                                                        </select>
+                                                                    </div>
+                                                                )}
+                                                            </>
                                                         )}
                                                     </div>
                                                     <button type="button" className="remove-guidance-btn" onClick={() => removeGuidanceImage(img.tempId)} title="Remove Image">&times;</button>
