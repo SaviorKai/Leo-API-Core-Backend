@@ -1,5 +1,3 @@
-
-
 // --- SHARED CONFIGURATIONS ---
 
 // Available styles for image generation models
@@ -74,9 +72,11 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             contrast: true,
             aspectRatios: Object.keys(ASPECT_RATIO_DIMENSIONS),
             contextGuidance: ['SUBJECT_AND_STYLE', 'STYLE_ONLY', 'SUBJECT_ONLY', 'NEGATIVE'],
+            promptEnhance: true,
         },
         defaults: {
             strength: 0.6,
+            promptEnhance: false,
         }
     },
     "FLUX.1 Kontext Pro": {
@@ -93,6 +93,7 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
             style: 'Dynamic',
             contrast: 1.0,
             numImages: 1,
+            promptEnhance: false,
         }
     },
     "Flux Dev (Precision)": {
@@ -106,10 +107,12 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
                 'Style Reference': { preprocessorId: 299, maxInputs: 4, usesWeight: false },
                 'Content Reference': { preprocessorId: 233, maxInputs: 1, usesWeight: false }
             },
+            promptEnhance: true,
         },
         defaults: {
             style: 'Dynamic',
             contrast: 1.0,
+            promptEnhance: false,
         }
     },
     "Flux Schnell (Speed)": {
@@ -123,10 +126,12 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
                 'Style Reference': { preprocessorId: 298, maxInputs: 4, usesWeight: false },
                 'Content Reference': { preprocessorId: 232, maxInputs: 1, usesWeight: false }
             },
+            promptEnhance: true,
         },
         defaults: {
             style: 'Dynamic',
             contrast: 1.0,
+            promptEnhance: false,
         }
     },
 
@@ -144,10 +149,12 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
                 'Character Reference': { preprocessorId: 397, maxInputs: 1, usesWeight: false },
                 'Content Reference': { preprocessorId: 364, maxInputs: 1, usesWeight: false }
             },
+            promptEnhance: true,
         },
         defaults: {
             style: 'Dynamic',
             contrast: 2.5, // Required for Alchemy
+            promptEnhance: false,
         }
     },
     "Leonardo Phoenix 0.9": {
@@ -163,10 +170,12 @@ export const MODEL_CONFIG: Record<string, ModelConfigEntry> = {
                 'Character Reference': { preprocessorId: 397, maxInputs: 1, usesWeight: false },
                 'Content Reference': { preprocessorId: 364, maxInputs: 1, usesWeight: false }
             },
+            promptEnhance: true,
         },
         defaults: {
             style: 'Dynamic',
             contrast: 2.5, // Required for Alchemy
+            promptEnhance: false,
         }
     },
 

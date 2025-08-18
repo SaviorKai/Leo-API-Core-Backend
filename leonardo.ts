@@ -37,6 +37,7 @@ export interface GenerationParams {
     seed?: number;
     highContrast?: boolean;
     contrast?: number;
+    enhancePrompt?: boolean;
     init_image_id?: string;
     init_generation_image_id?: string;
     init_strength?: number;
@@ -55,6 +56,7 @@ export interface GenerationResult {
     generations_by_pk?: {
         id: string;
         status: 'PENDING' | 'COMPLETE' | 'FAILED';
+        prompt?: string;
         generated_images?: {
             id: string;
             url: string;
